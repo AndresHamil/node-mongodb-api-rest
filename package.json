@@ -7,6 +7,8 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
+    "db:init": "mongosh db/build.mongodb.js",
+    "db:init:usuarios": "mongosh db/gestion/usuarios.mongodb.js",
     "db:indexes:usuarios": "node scripts/createUsuariosIndexes.js",
     "test": "node --test"
   },

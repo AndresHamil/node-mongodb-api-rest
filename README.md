@@ -52,24 +52,67 @@ MONGO_URI=mongodb+srv://TU_USUARIO:TU_PASSWORD@TU_CLUSTER.mongodb.net/valianDB?r
 DB_DATABASE=valianDB
 ```
 
-### 4. Crear indices de usuarios
+### 4. Inicializar la base minima
 
 ```bash
-npm run db:indexes:usuarios
+npm run db:init
 ```
 
-### 5. Iniciar la API
+### 5. Inicializar usuarios y sesiones
+
+```bash
+npm run db:init:usuarios
+```
+
+### 6. Iniciar la API
 
 ```bash
 npm run dev
 ```
 
-### 6. Probar salud de la API
+### 7. Probar salud de la API
 
 ```bash
 GET /
 GET /health
 ```
+
+## Inicializacion de base de datos
+
+El proyecto ya no usa scripts SQL. Toda la preparación mínima de datos vive en scripts MongoDB ejecutables con mongosh.
+
+### Bootstrap base del proyecto
+
+```bash
+npm run db:init
+```
+
+Ejecuta [db/build.mongodb.js](db/build.mongodb.js) y garantiza lo mínimo para arrancar:
+
+- base de datos objetivo
+- colección usuarios
+- colección sesiones
+
+### Inicializacion completa del modulo usuarios
+
+```bash
+npm run db:init:usuarios
+```
+
+Ejecuta [db/gestion/usuarios.mongodb.js](db/gestion/usuarios.mongodb.js) y se encarga de:
+
+- crear o actualizar las colecciones usuarios y sesiones
+- aplicar validadores JSON Schema
+- crear índices del módulo
+- sembrar el usuario inicial si no existe
+
+### Mantenimiento de índices desde Node.js
+
+```bash
+npm run db:indexes:usuarios
+```
+
+Sirve como apoyo operativo para asegurar los índices únicos del recurso usuarios.
 
 ## Variables de entorno
 
@@ -107,6 +150,18 @@ npm run dev
 ```
 
 Levanta la API en desarrollo con recarga automatica.
+
+```bash
+npm run db:init
+```
+
+Inicializa la base mínima del proyecto en MongoDB.
+
+```bash
+npm run db:init:usuarios
+```
+
+Inicializa usuarios y sesiones con validadores, índices y semilla administrativa.
 
 ```bash
 npm start
@@ -297,7 +352,13 @@ npm install
 Crear indices de usuarios:
 
 ```bash
-npm run db:indexes:usuarios
+npm run db:init
+```
+
+Inicializar usuarios y sesiones:
+
+```bash
+npm run db:init:usuarios
 ```
 
 Levantar en desarrollo:
@@ -342,7 +403,7 @@ Entrada serverless para Vercel.
 
 ### scripts
 
-Scripts auxiliares. Hoy el mas importante es la creacion de indices para usuarios.
+Scripts auxiliares. Hoy los más importantes son el bootstrap Mongo base y la inicialización del módulo usuarios.
 
 ### src
 
@@ -387,29 +448,3 @@ Este repositorio todavia conserva rastros del proyecto original, pero la parte v
 - Mantén fuera de Git cualquier credencial real.
 - Si expones una URI o contraseña, rotala inmediatamente en Atlas.
 - Antes de culpar al codigo en Vercel, revisa primero variables de entorno y Network Access en Atlas.
-
-Contiene helpers para pruebas.
-
-- usuarios.helpers.js: prepara contexto de prueba, crea usuarios, crea sesiones actor, limpia datos temporales y cierra la conexion a MongoDB al terminar.
-
-## Estado actual del proyecto
-
-Hoy el proyecto tiene una estructura mixta:
-
-- mantiene scripts SQL del proyecto original
-- ya usa MongoDB como flujo real de ejecucion
-- tiene el modulo usuarios como referencia completa para nuevos recursos
-- cuenta con autenticacion basada en sesiones activas
-- ya incluye pruebas automatizadas para usuarios
-
-## Recomendacion de uso para nuevos modulos
-
-Si vas a crear nuevos recursos en MongoDB, el mejor punto de referencia es el modulo de usuarios, porque ya muestra:
-
-- estructura de rutas
-- controladores separados por responsabilidad
-- helpers propios del recurso
-- validaciones
-- manejo de errores
-- proteccion por sesion
-- pruebas automatizadas
