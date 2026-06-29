@@ -1,53 +1,85 @@
-# API REST Node.js + MongoDB
+# API REST Usuarios · Node.js + MongoDB
 
-Este proyecto es una API REST construida con Node.js, Express y MongoDB.
+Backend REST construido con Node.js, Express y MongoDB. Hoy el proyecto esta documentado y enfocado alrededor del modulo de usuarios, que funciona como referencia completa para autenticacion por sesiones, CRUD, consultas y despliegue en Vercel.
 
-Su objetivo actual es servir como base para una arquitectura por modulos, donde el recurso de usuarios ya funciona como referencia completa para futuros endpoints. El repositorio conserva parte de la estructura y scripts SQL del proyecto original, pero el flujo activo de la API ya trabaja con MongoDB.
+## Vision rapida
 
-## Tecnologias usadas
+- API REST con Express.
+- Persistencia en MongoDB Atlas.
+- Autenticacion por sesiones activas.
+- Despliegue compatible con Vercel.
+- Modulo de usuarios como slice principal del proyecto.
+
+## Stack
 
 - Node.js
 - Express
-- MongoDB
+- MongoDB Driver
 - dotenv
 - bcrypt
-- Node Test Runner
+- nodemon
 - supertest
+- Node Test Runner
 
-## Requisitos previos
+## Arranque en 2 minutos
 
-Antes de arrancar el proyecto necesitas tener instalado:
-
-- Node.js
-- npm
-- MongoDB local o acceso a una instancia remota de MongoDB
-
-## Instalacion del proyecto
-
-Clona o descarga el proyecto y luego instala las dependencias:
+### 1. Instalar dependencias
 
 ```bash
 npm install
 ```
 
-## Variables de entorno
+### 2. Crear el archivo de entorno
 
-Este proyecto utiliza un archivo .env en la raiz.
-
-El repositorio incluye un archivo .env.example con la estructura base. En cualquier equipo nuevo debes copiar ese archivo, renombrarlo a .env y despues completar tus valores reales de conexion.
-
-Ejemplo:
+Windows:
 
 ```bash
 copy .env.example .env
 ```
 
-Variables usadas por la aplicacion:
+macOS o Linux:
+
+```bash
+cp .env.example .env
+```
+
+### 3. Completar la conexion a MongoDB
+
+En .env agrega tu URI real y revisa el nombre de la base:
 
 ```env
-PORT=3000
-MONGO_URI=mongodb://127.0.0.1:27017
-DB_DATABASE=ValianDB
+MONGO_URI=mongodb+srv://TU_USUARIO:TU_PASSWORD@TU_CLUSTER.mongodb.net/valianDB?retryWrites=true&w=majority&appName=ValianDB
+DB_DATABASE=valianDB
+```
+
+### 4. Crear indices de usuarios
+
+```bash
+npm run db:indexes:usuarios
+```
+
+### 5. Iniciar la API
+
+```bash
+npm run dev
+```
+
+### 6. Probar salud de la API
+
+```bash
+GET /
+GET /health
+```
+
+## Variables de entorno
+
+El repositorio no sube .env real. Solo sube .env.example con la estructura base.
+
+Variables principales del proyecto:
+
+```env
+MONGO_URI=mongodb+srv://TU_USUARIO:TU_PASSWORD@TU_CLUSTER.mongodb.net/valianDB?retryWrites=true&w=majority&appName=ValianDB
+DB_DATABASE=valianDB
 
 SESSION_DURATION_HOURS=12
 SESSION_INACTIVITY_MINUTES=60
@@ -61,262 +93,300 @@ DB_COLLECTION_DEPARTAMENTOS=departamentos
 DB_COLLECTION_PERFILES=perfiles
 ```
 
-Notas:
+Notas importantes:
 
-- MONGO_URI apunta al servidor de MongoDB.
-- DB_DATABASE define el nombre de la base de datos que usara la API.
-- Las variables DB_COLLECTION_* permiten cambiar los nombres de las colecciones sin tocar el codigo.
-- Si no defines algunas variables, la aplicacion usa valores por defecto desde src/config.js.
+- Para Vercel usa una sola variable de conexion: MONGO_URI.
+- PORT es opcional en local y no se configura en Vercel.
+- No subas .env a Git.
+- No dupliques MONGO_URI y MONGODB_URI salvo que tengas una razon concreta.
 
-## Preparacion de MongoDB
-
-Antes de iniciar la API debes asegurarte de que MongoDB este corriendo.
-
-Ejemplo si trabajas en local:
-
-```bash
-mongod
-```
-
-Despues de eso, ejecuta el script de indices para la coleccion de usuarios:
-
-```bash
-npm run db:indexes:usuarios
-```
-
-Ese script crea indices unicos para:
-
-- email
-- usuario
-
-Esto es importante porque el modulo usuarios depende de esas restricciones para evitar duplicados.
-
-## Arranque del proyecto
-
-### Desarrollo
+## Scripts basicos
 
 ```bash
 npm run dev
 ```
 
-Este comando levanta el servidor con nodemon usando:
-
-- src/index.js como punto de entrada
-- recarga automatica al detectar cambios
-
-### Produccion
+Levanta la API en desarrollo con recarga automatica.
 
 ```bash
 npm start
 ```
 
-## Pruebas
-
-Para ejecutar las pruebas automatizadas:
-
-```bash
-npm test
-```
-
-Actualmente las pruebas visibles del proyecto estan concentradas en el modulo de usuarios, que es el ejemplo mas completo del repositorio.
-
-## Flujo basico para arrancar desde cero
-
-Si descargas el proyecto por primera vez, este es el orden recomendado:
-
-1. Instalar dependencias con npm install.
-2. Copiar .env.example a .env.
-3. Completar en .env las conexiones y credenciales reales de MongoDB.
-4. Levantar MongoDB local o verificar acceso a tu instancia remota.
-5. Ejecutar npm run db:indexes:usuarios.
-6. Iniciar la API con npm run dev.
-7. Probar endpoints o correr la suite con npm test.
-
-## Scripts disponibles
-
-```bash
-npm run dev
-```
-
-Inicia el servidor en modo desarrollo con nodemon.
-
-```bash
-npm start
-```
-
-Inicia el servidor en modo normal con Node.js.
+Levanta la API en modo Node normal.
 
 ```bash
 npm run db:indexes:usuarios
 ```
 
-Crea los indices necesarios para la coleccion de usuarios en MongoDB.
+Crea los indices unicos del modulo usuarios.
 
 ```bash
 npm test
 ```
 
-Ejecuta las pruebas automatizadas del proyecto.
+Ejecuta las pruebas automatizadas del modulo usuarios.
+
+## MongoDB Atlas
+
+### Configuracion minima
+
+Para que la API conecte correctamente con MongoDB Atlas debes revisar dos cosas:
+
+- Database Access: usuario y contraseña vigentes.
+- Network Access: permisos de red para la maquina local o Vercel.
+
+### Regla de red para Vercel
+
+Si vas a desplegar en Vercel, MongoDB Atlas no va a recibir la conexion desde la IP de tu PC. Para este proyecto, la forma mas directa de permitir el acceso es agregar en Network Access:
+
+```text
+0.0.0.0/0
+```
+
+Esto permite conexiones desde cualquier IP, incluida la salida de Vercel.
+
+Flujo recomendado:
+
+1. Entra a MongoDB Atlas.
+2. Abre tu proyecto.
+3. Ve a Network Access.
+4. Pulsa Add IP Address.
+5. Elige Allow Access from Anywhere.
+6. Guarda el cambio.
+
+Nota de seguridad:
+
+- 0.0.0.0/0 es practico para despliegues y pruebas rapidas.
+- Si el proyecto crece, conviene endurecer esta politica y rotar credenciales con frecuencia.
+
+## Despliegue en Vercel
+
+El proyecto ya incluye compatibilidad basica para Vercel mediante una entrada serverless.
+
+### Variables que debes capturar en Vercel
+
+- MONGO_URI
+- DB_DATABASE
+- SESSION_DURATION_HOURS
+- SESSION_INACTIVITY_MINUTES
+- SESSION_RENEWAL_THRESHOLD_MINUTES
+- SESSION_MAX_ACTIVE
+- DB_COLLECTION_USUARIOS
+- DB_COLLECTION_SESIONES
+- DB_COLLECTION_SUCURSALES
+- DB_COLLECTION_DEPARTAMENTOS
+- DB_COLLECTION_PERFILES
+
+### Variables que no necesitas capturar en Vercel
+
+- PORT
+- DB_USER
+- DB_PASSWORD
+- AUTHORIZED_IP
+- MONGODB_URI si ya estas usando MONGO_URI
+
+### Flujo de despliegue
+
+1. Subir cambios a Git.
+2. Conectar el repositorio en Vercel.
+3. Configurar las variables de entorno del proyecto.
+4. Verificar que Atlas permita el acceso desde Vercel con 0.0.0.0/0.
+5. Ejecutar Deploy o Redeploy.
+6. Probar GET / y GET /health.
+
+## Flujo funcional del modulo usuarios
+
+El acceso a usuarios sigue este orden:
+
+1. Iniciar sesion.
+2. Obtener token.
+3. Enviar token en requests protegidos.
+4. Consumir endpoints del modulo usuarios.
+
+## Endpoints principales
+
+### Salud
+
+```http
+GET /
+GET /health
+```
+
+### Sesiones
+
+```http
+POST /sesiones/iniciarSesion
+POST /sesiones/cerrarSesion
+```
+
+Payload minimo de inicio de sesion:
+
+```json
+{
+	"usuario": "correo.o.usuario",
+	"password": "Abc12345!",
+	"dispositivo": "Chrome en Windows"
+}
+```
+
+### Usuarios
+
+Todos los endpoints bajo /gestion/usuarios requieren sesion activa.
+
+```http
+POST /gestion/usuarios/registrarUsuario
+PUT /gestion/usuarios/editarUsuario
+DELETE /gestion/usuarios/eliminarUsuario
+GET /gestion/usuarios/consultarUsuarios
+GET /gestion/usuarios/:id
+POST /gestion/usuarios/consultarUsuario
+POST /gestion/usuarios/consultarUsuariosFormulario
+POST /gestion/usuarios/consultarUsuariosFiltros
+```
+
+Payload base para registrar usuario:
+
+```json
+{
+	"nombre": "Luis",
+	"apellido": "Rodriguez",
+	"email": "luis@test.local",
+	"telefono": "1234567890",
+	"password": "Abc12345!"
+}
+```
+
+Reglas visibles del registro:
+
+- nombre y apellido deben ser texto valido
+- email debe tener formato correcto
+- telefono debe tener 10 digitos si se envia
+- password debe tener al menos 8 caracteres
+- password debe incluir minuscula, mayuscula, numero y caracter especial
+- email y usuario no pueden duplicarse
+
+Payload base para editar usuario:
+
+```json
+{
+	"id": "OBJECT_ID",
+	"nombre": "Luis",
+	"apellido": "Rodriguez",
+	"email": "nuevo@test.local",
+	"telefono": "1234567890"
+}
+```
+
+Si vas a cambiar contraseña, debes enviar tambien:
+
+```json
+{
+	"currentPassword": "Abc12345!",
+	"newPassword": "Nueva123!"
+}
+```
+
+## Comandos de trabajo diario
+
+Instalar dependencias:
+
+```bash
+npm install
+```
+
+Crear indices de usuarios:
+
+```bash
+npm run db:indexes:usuarios
+```
+
+Levantar en desarrollo:
+
+```bash
+npm run dev
+```
+
+Correr pruebas:
+
+```bash
+npm test
+```
+
+Subir cambios a Git:
+
+```bash
+git status
+git add .
+git commit -m "tu mensaje"
+git push
+```
 
 ## Estructura del proyecto
 
 ```text
 .
-|-- db/
+|-- api/
 |-- scripts/
 |-- src/
 |-- test/
 |-- test-support/
-|-- .env
-|-- .gitignore
+|-- .env.example
 |-- package.json
 |-- README.md
+|-- vercel.json
 ```
 
-### Raiz del proyecto
+### api
 
-- package.json: define dependencias, scripts y configuracion general del proyecto.
-- README.md: documentacion general de instalacion, arranque y estructura.
-- .env: variables de entorno globales.
-- .gitignore: archivos y carpetas que no deben subirse al repositorio.
-
-### db
-
-Esta carpeta conserva scripts SQL del proyecto original.
-
-- build.sql: script principal para crear la base relacional y sus tablas.
-- gestion/: scripts SQL de sucursales, departamentos, perfiles y usuarios.
-- sistemas/: scripts SQL de modulos y procesos.
-
-Importante:
-
-- Esta carpeta no controla el flujo actual de la API en ejecucion.
-- Se mantiene como referencia del modelo anterior basado en SQL.
+Entrada serverless para Vercel.
 
 ### scripts
 
-Contiene scripts auxiliares para tareas manuales o de mantenimiento.
-
-- createUsuariosIndexes.js: crea indices unicos en MongoDB para la coleccion de usuarios.
+Scripts auxiliares. Hoy el mas importante es la creacion de indices para usuarios.
 
 ### src
 
-Contiene todo el codigo fuente de la API.
+Codigo fuente principal de la API.
 
-#### Archivos base
+Archivos clave:
 
-- src/index.js: punto de entrada del servidor. Primero conecta a MongoDB y luego levanta Express.
-- src/app.js: configura la app de Express, habilita JSON y monta todas las rutas.
-- src/config.js: lee variables de entorno y expone configuracion global.
-- src/db.js: administra la conexion a MongoDB y el acceso a colecciones.
+- src/index.js: arranque local del servidor.
+- src/app.js: composicion de Express y rutas globales.
+- src/config.js: lectura de variables de entorno.
+- src/db.js: conexion Mongo reutilizable para local y Vercel.
 
-#### src/controllers
+Directorios clave:
 
-Contiene la logica de negocio de cada endpoint.
-
-Se organiza por dominios:
-
-- gestion/
-- otros/
-- sistema/
-
-Cada recurso suele dividirse en controladores especializados, por ejemplo:
-
-- registrar
-- consultar uno
-- consultar varios
-- filtros
-- formulario
-- editar
-- eliminar
-
-##### gestion
-
-Agrupa recursos operativos del negocio:
-
-- departamentos/
-- perfiles/
-- sucursales/
-- usuarios/
-
-El modulo usuarios es el ejemplo mas completo del proyecto y ya esta migrado a MongoDB.
-
-Dentro de usuarios se encuentran:
-
-- controladores del CRUD y consultas
-- un index.js que reexporta el modulo
-- una carpeta methods/ con logica reutilizable especifica del recurso
-
-##### otros
-
-Agrupa modulos auxiliares del sistema.
-
-Actualmente destaca:
-
-- sesiones/
-
-Aqui viven controladores como:
-
-- iniciarSesion
-- cerrarSesion
-
-##### sistema
-
-Agrupa recursos tecnicos o estructurales del sistema, por ejemplo:
-
-- modulos/
-- procesos/
-
-### src/routes
-
-Define los endpoints HTTP y conecta cada ruta con su controlador.
-
-- index.js: centraliza y reexporta todos los routers.
-- gestion/: rutas de departamentos, perfiles, sucursales y usuarios.
-- otros/: rutas de sesiones.
-- sistema/: rutas de modulos y procesos.
-
-Ejemplo real del proyecto:
-
-- el router de usuarios protege el prefijo /gestion/usuarios con validacion de sesion activa
-- luego registra endpoints para registrar, editar, eliminar y consultar usuarios
-
-### src/middlewares
-
-Contiene logica intermedia reutilizable entre rutas y controladores.
-
-- validarSesionActiva.middleware.js: valida el token, revisa si la sesion sigue activa y carga el usuario autenticado en la request.
-
-Esto permite proteger endpoints privados sin duplicar validaciones en cada controlador.
-
-### src/schemas
-
-Actualmente esta vacia.
-
-Esta carpeta queda disponible para colocar esquemas de validacion o contratos de datos si el proyecto evoluciona hacia una validacion mas formal.
-
-### src/utils
-
-Contiene utilidades globales compartidas por toda la aplicacion.
-
-- methods.js: archivo central de helpers del proyecto. Incluye validaciones, normalizacion, respuestas API, manejo de errores, criptografia y helpers de sesiones y MongoDB.
-- logger.js: imprime errores estructurados en consola para facilitar depuracion.
-- notImplemented.js: devuelve respuestas 501 para endpoints pendientes de implementar o migrar.
+- src/controllers/gestion/usuarios: logica del modulo usuarios.
+- src/controllers/otros/sesiones: autenticacion y cierre de sesion.
+- src/routes/gestion/usuarios.routes.js: endpoints protegidos de usuarios.
+- src/routes/otros/sesiones.routes.js: endpoints de login y logout.
+- src/middlewares: validacion de sesion activa.
+- src/utils: helpers de validacion, respuestas, errores, sesiones y Mongo.
 
 ### test
 
-Contiene las pruebas automatizadas.
-
-Actualmente la cobertura visible esta orientada a usuarios:
-
-- consultasUsuario.test.js
-- registrarUsuario.test.js
-- editarUsuario.test.js
-- eliminarUsuario.test.js
-
-Estas pruebas verifican autenticacion, validaciones, respuestas correctas y errores esperados del modulo usuarios.
+Pruebas del modulo usuarios.
 
 ### test-support
+
+Helpers compartidos para preparar datos y sesiones de prueba.
+
+## Enfoque actual del proyecto
+
+Este repositorio todavia conserva rastros del proyecto original, pero la parte viva y util para desarrollo y despliegue actual es:
+
+- autenticacion por sesiones
+- modulo usuarios en MongoDB
+- despliegue en Vercel
+- pruebas del flujo de usuarios
+
+## Recomendaciones finales
+
+- Usa .env.example como contrato de configuracion.
+- Mantén fuera de Git cualquier credencial real.
+- Si expones una URI o contraseña, rotala inmediatamente en Atlas.
+- Antes de culpar al codigo en Vercel, revisa primero variables de entorno y Network Access en Atlas.
 
 Contiene helpers para pruebas.
 
