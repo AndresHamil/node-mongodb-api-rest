@@ -1,7 +1,7 @@
 import { ObjectId } from "mongodb";
 import { connectMongo, closeMongo } from "../src/db.js";
 import * as methods from "../src/utils/methods.js";
-import * as usuariosMethods from "../src/controllers/gestion/usuarios/methods/usuarios.methods.js";
+import * as usuariosMethods from "../src/controllers/sistema/accesos/usuarios/methods/usuarios.methods.js";
 
 export const createUsuariosTestContext = () => {
     const trackedUserIds = new Set();
@@ -33,6 +33,12 @@ export const createUsuariosTestContext = () => {
         }
 
         if (trackedUserIds.size > 0) {
+            await sesionesCollection.deleteMany({
+                fkUsuarioId: {
+                    $in: Array.from(trackedUserIds, (id) => new ObjectId(id)),
+                },
+            });
+
             await usuariosCollection.deleteMany({
                 _id: {
                     $in: Array.from(trackedUserIds, (id) => new ObjectId(id)),

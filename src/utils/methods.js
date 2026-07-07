@@ -356,10 +356,11 @@ export const debeRenovarSesion = (sessionExpiry, thresholdMinutes = SESSION_RENE
     return restanteMs <= thresholdMs;
 };
 
-export const validarCredencialesSesion = ({ usuario = null, password = null, token = null, dispositivo = null }, { requiereToken = false } = {}) => {
+export const validarCredencialesSesion = ({ usuario = null, password = null, token = null, dispositivo = null, sistemaOperativo = null }, { requiereToken = false } = {}) => {
     validarTipoDato(usuario, "El", "usuario", "string");
     validarTipoDato(password, "La", "contraseña", "string");
     validarTipoDato(dispositivo, "El", "dispositivo", "string");
+    validarTipoDato(sistemaOperativo, "El", "sistema operativo", "string");
 
     if (requiereToken) {
         validarTipoDato(token, "El", "token", "string");
@@ -431,6 +432,16 @@ export const resolverSistemaOperativo = (userAgent = "") => {
     return "Desconocido";
 };
 
+export const resolverSistemaOperativoSesion = (sistemaOperativo = null, userAgent = "") => {
+    const sistemaOperativoNormalizado = normalizarString(sistemaOperativo);
+
+    if (sistemaOperativoNormalizado) {
+        return sistemaOperativoNormalizado;
+    }
+
+    return resolverSistemaOperativo(userAgent);
+};
+
 export const resolverNavegador = (userAgent = "") => {
     const agent = userAgent || "";
 
@@ -463,7 +474,7 @@ export const extraerIpCliente = (req) => {
     return req.ip ?? req.socket?.remoteAddress ?? null;
 };
 
-export const construirMetadataSesion = (req, dispositivo = null) => {
+export const construirMetadataSesion = (req, { dispositivo = null, sistemaOperativo = null } = {}) => {
     const userAgent = normalizarString(req.headers["user-agent"] ?? null);
     const acceptLanguage = normalizarString(req.headers["accept-language"] ?? null);
     const origen = normalizarString(req.headers.origin ?? req.headers.referer ?? null);
@@ -473,7 +484,7 @@ export const construirMetadataSesion = (req, dispositivo = null) => {
         userAgent,
         ip: normalizarString(extraerIpCliente(req)),
         navegador: resolverNavegador(userAgent),
-        sistemaOperativo: resolverSistemaOperativo(userAgent),
+        sistemaOperativo: resolverSistemaOperativoSesion(sistemaOperativo, userAgent),
         tipoDispositivo: resolverTipoDispositivo(userAgent),
         idioma: acceptLanguage ? acceptLanguage.split(",")[0] : null,
         origen,

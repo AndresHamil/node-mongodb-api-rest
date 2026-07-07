@@ -11,7 +11,7 @@
 */
 
 const DATABASE_NAME = "valianDB";
-const BASE_COLLECTIONS = ["usuarios", "sesiones"];
+const BASE_COLLECTIONS = ["usuarios", "sesiones", "empresas", "sucursales", "departamentos", "perfiles", "modulos", "procesos"];
 
 const database = db.getSiblingDB(DATABASE_NAME);
 

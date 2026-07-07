@@ -1,14 +1,18 @@
 import { Router } from "express";
-import * as DepartamentosController from "../../controllers/gestion/departamentos/index.js";
+import * as DepartamentosController from "../../controllers/sistema/organizacion/departamentos/index.js";
+import { validarSesionActiva } from "../../middlewares/validarSesionActiva.middleware.js";
 const router = Router()
+const BASE_PATH = '/gestion/departamento/departamentos';
 
-router.get('/gestion/departamentos/consultarDepartamentos', DepartamentosController.consultarDepartamentos);
-router.post('/gestion/departamentos/consultarDepartamento', DepartamentosController.consultarDepartamento);
-router.post('/gestion/departamentos/consultarDepartamentosFiltros', DepartamentosController.consultarDepartamentosFiltros);
-router.post('/gestion/departamentos/consultarDepartamentosFormulario', DepartamentosController.consultarDepartamentosFormulario);
-router.post('/gestion/departamentos/registrarDepartamento', DepartamentosController.registrarDepartamento);
-router.put('/gestion/departamentos/editarDepartamento', DepartamentosController.editarDepartamento);
-router.delete('/gestion/departamentos/eliminarDepartamento', DepartamentosController.eliminarDepartamento);
+router.use(BASE_PATH, validarSesionActiva)
+
+router.get(`${BASE_PATH}/consultarDepartamentos`, DepartamentosController.consultarDepartamentos);
+router.post(`${BASE_PATH}/consultarDepartamento`, DepartamentosController.consultarDepartamento);
+router.post(`${BASE_PATH}/consultarDepartamentosFiltros`, DepartamentosController.consultarDepartamentosFiltros);
+router.post(`${BASE_PATH}/consultarDepartamentosFormulario`, DepartamentosController.consultarDepartamentosFormulario);
+router.post(`${BASE_PATH}/registrarDepartamento`, DepartamentosController.registrarDepartamento);
+router.put(`${BASE_PATH}/editarDepartamento`, DepartamentosController.editarDepartamento);
+router.delete(`${BASE_PATH}/eliminarDepartamento`, DepartamentosController.eliminarDepartamento);
 
 
 

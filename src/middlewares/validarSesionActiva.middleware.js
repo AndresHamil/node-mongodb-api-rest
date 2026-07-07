@@ -1,6 +1,6 @@
 import * as methods from "../utils/methods.js";
 import { registrarErrorEstructurado } from "../utils/logger.js";
-import * as usuariosMethods from "../controllers/gestion/usuarios/methods/usuarios.methods.js";
+import * as usuariosMethods from "../controllers/sistema/accesos/usuarios/methods/usuarios.methods.js";
 
 export const validarSesionActiva = async (req, res, next) => {
     try {

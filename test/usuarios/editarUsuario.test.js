@@ -29,7 +29,7 @@ test("PUT /gestion/usuarios/editarUsuario responde 401 sin token", async () => {
     const usuario = await ctx.createUser();
 
     const response = await request(app)
-        .put("/gestion/usuarios/editarUsuario")
+        .put("/gestion/usuario/usuarios/editarUsuario")
         .send({
             id: usuario.insertedId.toString(),
             nombre: "Mario",
@@ -45,7 +45,7 @@ test("PUT /gestion/usuarios/editarUsuario responde 200 con edición válida", as
     const usuario = await ctx.createUser();
 
     const response = await request(app)
-        .put("/gestion/usuarios/editarUsuario")
+        .put("/gestion/usuario/usuarios/editarUsuario")
         .set("Authorization", `Bearer ${token}`)
         .send({
             id: usuario.insertedId.toString(),
@@ -68,7 +68,7 @@ test("PUT /gestion/usuarios/editarUsuario permite editar solo email enviando nul
     const nuevoEmail = `despues.${Date.now()}@test.local`;
 
     const response = await request(app)
-        .put("/gestion/usuarios/editarUsuario")
+        .put("/gestion/usuario/usuarios/editarUsuario")
         .set("Authorization", `Bearer ${token}`)
         .send({
             id: usuario.insertedId.toString(),
@@ -93,7 +93,7 @@ test("PUT /gestion/usuarios/editarUsuario permite eliminar el telefono enviando 
     const usuario = await ctx.createUser({ telefono: "1234567890" });
 
     const response = await request(app)
-        .put("/gestion/usuarios/editarUsuario")
+        .put("/gestion/usuario/usuarios/editarUsuario")
         .set("Authorization", `Bearer ${token}`)
         .send({
             id: usuario.insertedId.toString(),
@@ -111,7 +111,7 @@ test("PUT /gestion/usuarios/editarUsuario permite cambiar la contraseña con cur
     const usuario = await ctx.createUser({ password: "Temporal123!" });
 
     const response = await request(app)
-        .put("/gestion/usuarios/editarUsuario")
+        .put("/gestion/usuario/usuarios/editarUsuario")
         .set("Authorization", `Bearer ${token}`)
         .send({
             id: usuario.insertedId.toString(),
@@ -156,7 +156,7 @@ test("PUT /gestion/usuarios/editarUsuario elimina todas las sesiones del usuario
     ctx.trackSessionId(resultadoSesionMovil.insertedId);
 
     const response = await request(app)
-        .put("/gestion/usuarios/editarUsuario")
+        .put("/gestion/usuario/usuarios/editarUsuario")
         .set("Authorization", `Bearer ${token}`)
         .send({
             id: usuario.insertedId.toString(),
@@ -179,7 +179,7 @@ test("PUT /gestion/usuarios/editarUsuario rechaza sesion=true porque el inicio d
     const usuario = await ctx.createUser({ sesion: false });
 
     const response = await request(app)
-        .put("/gestion/usuarios/editarUsuario")
+        .put("/gestion/usuario/usuarios/editarUsuario")
         .set("Authorization", `Bearer ${token}`)
         .send({
             id: usuario.insertedId.toString(),
@@ -196,7 +196,7 @@ test("PUT /gestion/usuarios/editarUsuario rechaza el cambio si currentPassword e
     const usuario = await ctx.createUser({ password: "Temporal123!" });
 
     const response = await request(app)
-        .put("/gestion/usuarios/editarUsuario")
+        .put("/gestion/usuario/usuarios/editarUsuario")
         .set("Authorization", `Bearer ${token}`)
         .send({
             id: usuario.insertedId.toString(),
@@ -214,7 +214,7 @@ test("PUT /gestion/usuarios/editarUsuario responde 422 con payload inválido", a
     const usuario = await ctx.createUser();
 
     const response = await request(app)
-        .put("/gestion/usuarios/editarUsuario")
+        .put("/gestion/usuario/usuarios/editarUsuario")
         .set("Authorization", `Bearer ${token}`)
         .send({
             id: usuario.insertedId.toString(),
@@ -230,7 +230,7 @@ test("PUT /gestion/usuarios/editarUsuario responde 404 si el usuario no existe",
     const { token } = await ctx.createActorSession();
 
     const response = await request(app)
-        .put("/gestion/usuarios/editarUsuario")
+        .put("/gestion/usuario/usuarios/editarUsuario")
         .set("Authorization", `Bearer ${token}`)
         .send({
             id: new ObjectId().toString(),
@@ -249,7 +249,7 @@ test("PUT /gestion/usuarios/editarUsuario responde 409 cuando el email ya existe
     await ctx.createUser({ email: emailDuplicado });
 
     const response = await request(app)
-        .put("/gestion/usuarios/editarUsuario")
+        .put("/gestion/usuario/usuarios/editarUsuario")
         .set("Authorization", `Bearer ${token}`)
         .send({
             id: usuarioOrigen.insertedId.toString(),

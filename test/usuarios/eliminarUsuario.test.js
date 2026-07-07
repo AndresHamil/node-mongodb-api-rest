@@ -29,7 +29,7 @@ test("DELETE /gestion/usuarios/eliminarUsuario responde 401 sin token", async ()
     const usuario = await ctx.createUser();
 
     const response = await request(app)
-        .delete("/gestion/usuarios/eliminarUsuario")
+        .delete("/gestion/usuario/usuarios/eliminarUsuario")
         .send({
             id: usuario.insertedId.toString(),
         });
@@ -67,7 +67,7 @@ test("DELETE /gestion/usuarios/eliminarUsuario responde 200 cuando elimina un us
     ctx.trackSessionId(resultadoSesionMovil.insertedId);
 
     const response = await request(app)
-        .delete("/gestion/usuarios/eliminarUsuario")
+        .delete("/gestion/usuario/usuarios/eliminarUsuario")
         .set("Authorization", `Bearer ${token}`)
         .send({
             id: usuario.insertedId.toString(),
@@ -88,7 +88,7 @@ test("DELETE /gestion/usuarios/eliminarUsuario responde 404 si el usuario no exi
     const { token } = await ctx.createActorSession();
 
     const response = await request(app)
-        .delete("/gestion/usuarios/eliminarUsuario")
+        .delete("/gestion/usuario/usuarios/eliminarUsuario")
         .set("Authorization", `Bearer ${token}`)
         .send({
             id: new ObjectId().toString(),

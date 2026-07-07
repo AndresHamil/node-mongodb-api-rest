@@ -1,5 +1,5 @@
 import * as methods from "../../../utils/methods.js";
-import * as usuariosMethods from "../../gestion/usuarios/methods/usuarios.methods.js";
+import * as usuariosMethods from "../../sistema/accesos/usuarios/methods/usuarios.methods.js";
 
 
 export const cerrarSesion = async (req, res) => {

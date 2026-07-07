@@ -25,7 +25,7 @@ test.afterEach(async () => {
 // Metodo para probar que listar usuarios exige un token de sesion valido.
 test("GET /gestion/usuarios/consultarUsuarios responde 401 sin token", async () => {
     const response = await request(app)
-        .get("/gestion/usuarios/consultarUsuarios");
+        .get("/gestion/usuario/usuarios/consultarUsuarios");
 
     assert.equal(response.status, 401);
     assert.equal(response.body.success, false);
@@ -38,7 +38,7 @@ test("GET /gestion/usuarios/consultarUsuarios responde 200 con usuarios", async 
     const usuarioB = await ctx.createUser({ nombre: "Listado", apellido: "Dos" });
 
     const response = await request(app)
-        .get("/gestion/usuarios/consultarUsuarios")
+        .get("/gestion/usuario/usuarios/consultarUsuarios")
         .set("Authorization", `Bearer ${token}`);
 
     assert.equal(response.status, 200);
@@ -55,7 +55,7 @@ test("GET /gestion/usuarios/:id responde 200 con un usuario existente", async ()
     const usuario = await ctx.createUser({ nombre: "Consulta", apellido: "Detalle" });
 
     const response = await request(app)
-        .get(`/gestion/usuarios/${usuario.insertedId.toString()}`)
+        .get(`/gestion/usuario/usuarios/${usuario.insertedId.toString()}`)
         .set("Authorization", `Bearer ${token}`);
 
     assert.equal(response.status, 200);
@@ -69,7 +69,7 @@ test("POST /gestion/usuarios/consultarUsuario responde 404 si el usuario no exis
     const { token } = await ctx.createActorSession();
 
     const response = await request(app)
-        .post("/gestion/usuarios/consultarUsuario")
+        .post("/gestion/usuario/usuarios/consultarUsuario")
         .set("Authorization", `Bearer ${token}`)
         .send({
             id: new ObjectId().toString(),
@@ -89,7 +89,7 @@ test("POST /gestion/usuarios/consultarUsuariosFiltros responde 200 con coinciden
     });
 
     const response = await request(app)
-        .post("/gestion/usuarios/consultarUsuariosFiltros")
+        .post("/gestion/usuario/usuarios/consultarUsuariosFiltros")
         .set("Authorization", `Bearer ${token}`)
         .send({
             nombre: "Filtro",
@@ -107,7 +107,7 @@ test("POST /gestion/usuarios/consultarUsuariosFiltros responde 422 con filtro in
     const { token } = await ctx.createActorSession();
 
     const response = await request(app)
-        .post("/gestion/usuarios/consultarUsuariosFiltros")
+        .post("/gestion/usuario/usuarios/consultarUsuariosFiltros")
         .set("Authorization", `Bearer ${token}`)
         .send({
             estado: "activo",
@@ -123,7 +123,7 @@ test("POST /gestion/usuarios/consultarUsuariosFormulario responde 200 con catál
     const usuario = await ctx.createUser({ nombre: "Catalogo", apellido: "Visible" });
 
     const response = await request(app)
-        .post("/gestion/usuarios/consultarUsuariosFormulario")
+        .post("/gestion/usuario/usuarios/consultarUsuariosFormulario")
         .set("Authorization", `Bearer ${token}`)
         .send({
             nombre: "Catalogo",
@@ -146,7 +146,7 @@ test("POST /gestion/usuarios/consultarUsuariosFormulario responde 200 filtrando 
     });
 
     const response = await request(app)
-        .post("/gestion/usuarios/consultarUsuariosFormulario")
+        .post("/gestion/usuario/usuarios/consultarUsuariosFormulario")
         .set("Authorization", `Bearer ${token}`)
         .send({
             nombre: email,

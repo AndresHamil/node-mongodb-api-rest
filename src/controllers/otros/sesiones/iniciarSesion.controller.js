@@ -1,11 +1,13 @@
 import * as methods from "../../../utils/methods.js";
-import * as usuariosMethods from "../../gestion/usuarios/methods/usuarios.methods.js";
+import * as usuariosMethods from "../../sistema/accesos/usuarios/methods/usuarios.methods.js";
 
 export const iniciarSesion = async (req, res) => {
     let {
         usuario = null,
         password = null,
         dispositivo = null,
+        sistemaOperativo = null,
+        tipoSistemaOperativo = null,
     } = req.body ?? {};
 
     let successRes = true,
@@ -14,11 +16,19 @@ export const iniciarSesion = async (req, res) => {
         dataRes = null;
 
     try {
-        methods.validarCredencialesSesion({ usuario, password, dispositivo });
+        methods.validarCredencialesSesion({
+            usuario,
+            password,
+            dispositivo,
+            sistemaOperativo: sistemaOperativo ?? tipoSistemaOperativo,
+        });
 
         usuario = methods.normalizarUsuarioSesion(usuario);
         password = methods.normalizarString(password);
-        const metadataSesion = methods.construirMetadataSesion(req, dispositivo);
+        const metadataSesion = methods.construirMetadataSesion(req, {
+            dispositivo,
+            sistemaOperativo: sistemaOperativo ?? tipoSistemaOperativo,
+        });
         dispositivo = metadataSesion.dispositivo;
 
         const usuarioDb = await usuariosMethods.buscarUsuarioPorCredencial(usuario);
@@ -58,7 +68,10 @@ export const iniciarSesion = async (req, res) => {
         };
 
         dataRes = [{
-            usuario: await usuariosMethods.construirRespuestaUsuario(usuarioActualizado),
+            usuario: await usuariosMethods.construirRespuestaUsuario(usuarioActualizado, {
+                includeContextoAsignaciones: true,
+                includeAccesos: true,
+            }),
             sesion: await methods.construirRespuestaSesion(nuevaSesion, { includeToken: true }),
             sesionesActivas: sesionesActivas.length + 1,
         }];

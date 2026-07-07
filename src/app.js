@@ -12,7 +12,7 @@ app.get('/', (_req, res) => {
 		data: {
 			health: '/health',
 			sesiones: '/sesiones/iniciarSesion',
-			usuarios: '/gestion/usuarios/consultarUsuarios',
+			usuarios: '/gestion/usuario/usuarios/consultarUsuarios',
 		},
 	});
 });
@@ -27,6 +27,9 @@ app.get('/health', (_req, res) => {
 
 app.use(rutes.modulosRouter);
 app.use(rutes.procesosRouter);
+app.use(rutes.accesosRouter);
+app.use(rutes.organizacionRouter);
+app.use(rutes.empresasRouter);
 app.use(rutes.perfilesRouter);
 app.use(rutes.sucursalesRouter);
 app.use(rutes.departamentosRouter);

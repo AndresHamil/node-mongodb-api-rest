@@ -1,7 +1,10 @@
 // ----------------------------------------------------- [ SISTEMA ]
+export { router as accesosRouter } from "./sistema/accesos.routes.js"
 export { router as modulosRouter } from "./sistema/modulos.routes.js"
 export { router as procesosRouter } from "./sistema/procesos.routes.js"
+export { router as organizacionRouter } from "./sistema/organizacion.routes.js"
 // ----------------------------------------------------- [ GESTION ]
+export { router as empresasRouter } from "./gestion/empresas.routes.js"
 export { router as perfilesRouter } from "./gestion/perfiles.routes.js"
 export { router as sucursalesRouter } from "./gestion/sucursales.routes.js"
 export { router as departamentosRouter } from "./gestion/departamentos.routes.js"
