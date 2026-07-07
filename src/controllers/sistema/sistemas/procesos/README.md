@@ -15,7 +15,7 @@ Gestiona procesos asociados a un modulo del sistema.
 ## Operaciones actuales
 
 - registrarProceso: implementada.
-- consultarProcesos: placeholder.
+- consultarProcesos: implementada.
 - consultarProceso: placeholder.
 - consultarProcesosFiltros: placeholder.
 - consultarProcesosFormulario: placeholder.

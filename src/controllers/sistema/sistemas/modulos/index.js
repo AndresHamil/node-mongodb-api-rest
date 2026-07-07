@@ -1,6 +1,6 @@
 import { notImplemented } from "../../../../utils/notImplemented.js";
 
-export const consultarModulos = notImplemented("consultarModulos");
+export { consultarModulos } from "./consultarModulos.controller.js";
 export const consultarModulo = notImplemented("consultarModulo");
 export const consultarModulosFiltros = notImplemented("consultarModulosFiltros");
 export const consultarModulosFormulario = notImplemented("consultarModulosFormulario");

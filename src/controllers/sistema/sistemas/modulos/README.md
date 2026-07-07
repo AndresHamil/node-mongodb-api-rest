@@ -15,7 +15,7 @@ Gestiona modulos funcionales del sistema y su clasificacion por tipo.
 ## Operaciones actuales
 
 - registrarModulo: implementada.
-- consultarModulos: placeholder.
+- consultarModulos: implementada.
 - consultarModulo: placeholder.
 - consultarModulosFiltros: placeholder.
 - consultarModulosFormulario: placeholder.

@@ -2,6 +2,12 @@ import * as methods from "../../../../utils/methods.js";
 import { registrarErrorEstructurado } from "../../../../utils/logger.js";
 import * as sistemaMethods from "../../methods/sistema.methods.js";
 import * as modulosMethods from "./methods/modulos.methods.js";
+import * as usuariosMethods from "../../accesos/usuarios/methods/usuarios.methods.js";
+
+const construirNombreCompletoUsuario = (usuario) => [usuario?.nombre, usuario?.apellido]
+    .map((valor) => `${valor ?? ""}`.trim())
+    .filter(Boolean)
+    .join(" ") || null;
 
 export const registrarModulo = async (req, res) => {
     try {
@@ -25,10 +31,19 @@ export const registrarModulo = async (req, res) => {
         const { insertedId } = await modulosCollection.insertOne(nuevoModulo);
         nuevoModulo._id = insertedId;
 
+        const usuarioRegistro = await usuariosMethods.buscarUsuarioPorId(usuarioRegistroObjectId);
+        const respuestaModulo = modulosMethods.construirRespuestaModulo(nuevoModulo);
+
         return res.status(201).location(`/sistema/sistemas/modulos/registrarModulo`).json(methods.crearRespuestaApi({
             message: "Registro exitoso",
             data: {
-                modulo: modulosMethods.construirRespuestaModulo(nuevoModulo),
+                modulo: {
+                    ...(({
+                        usuarioRegistroId: _usuarioRegistroId,
+                        ...modulo
+                    }) => modulo)(respuestaModulo),
+                    usuarioRegistro: construirNombreCompletoUsuario(usuarioRegistro),
+                },
             },
         }));
     } catch (error) {
