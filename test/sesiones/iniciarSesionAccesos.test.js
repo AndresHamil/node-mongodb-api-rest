@@ -62,6 +62,7 @@ test("POST /sesiones/iniciarSesion devuelve contexto organizacional y accesos de
         moduloId: modulo.insertedId.toString(),
         moduloCodigo: "sistemas",
         nombre: "Inventario",
+        descripcion: "Proceso para administrar inventario",
         codigo: "inventario",
         ruta: "/sistema/sistemas/inventario",
         icono: "inventory-icon",
@@ -78,6 +79,7 @@ test("POST /sesiones/iniciarSesion devuelve contexto organizacional y accesos de
         moduloId: moduloGestion.insertedId.toString(),
         moduloCodigo: "gestion",
         nombre: "Accesos",
+        descripcion: "Proceso para administrar accesos",
         codigo: "accesos",
         ruta: "/gestion/gestion/accesos",
         icono: "access-icon",
@@ -97,6 +99,7 @@ test("POST /sesiones/iniciarSesion devuelve contexto organizacional y accesos de
         });
 
     assert.equal(accesoResponse.status, 200);
+    assert.equal(accesoResponse.body.data?.permiso?.proceso?.descripcion, "Proceso para administrar inventario");
 
     const accesoGestionResponse = await request(app)
         .post("/sistema/accesos/permisos/registrarPermiso")
@@ -134,12 +137,14 @@ test("POST /sesiones/iniciarSesion devuelve contexto organizacional y accesos de
     assert.equal(usuarioRespuesta?.accesos?.sistemas?.[0]?.modulo, "Sistemas");
     assert.equal(usuarioRespuesta?.accesos?.sistemas?.[0]?.tipo, "sistemas");
     assert.equal(usuarioRespuesta?.accesos?.sistemas?.[0]?.procesos?.[0]?.nombre, "Inventario");
+    assert.equal(usuarioRespuesta?.accesos?.sistemas?.[0]?.procesos?.[0]?.descripcion, "Proceso para administrar inventario");
     assert.equal(usuarioRespuesta?.accesos?.sistemas?.[0]?.procesos?.[0]?.icono, "inventory-icon");
     assert.equal(usuarioRespuesta?.accesos?.sistemas?.[0]?.procesos?.[0]?.url, "sistema/sistemas/inventario");
     assert.equal(usuarioRespuesta?.accesos?.sistemas?.[0]?.procesos?.[0]?.tipoPermiso, 0);
     assert.deepEqual(usuarioRespuesta?.accesos?.sistemas?.[0]?.procesos?.[0]?.permisos, ["sistema.sistemas.inventario.read"]);
     assert.equal(usuarioRespuesta?.accesos?.gestion?.[0]?.modulo, "Gestion");
     assert.equal(usuarioRespuesta?.accesos?.gestion?.[0]?.procesos?.[0]?.nombre, "Accesos");
+    assert.equal(usuarioRespuesta?.accesos?.gestion?.[0]?.procesos?.[0]?.descripcion, "Proceso para administrar accesos");
     assert.equal(usuarioRespuesta?.accesos?.gestion?.[0]?.procesos?.[0]?.tipoPermiso, 1);
     assert.deepEqual(usuarioRespuesta?.accesos?.gestion?.[0]?.procesos?.[0]?.permisos, [
         "sistema.gestion.accesos.read",
@@ -186,6 +191,7 @@ test("POST /sesiones/iniciarSesion distingue permisos por usuario con el mismo p
         moduloId: modulo.insertedId.toString(),
         moduloCodigo: "sistemas",
         nombre: "Inventarios",
+        descripcion: "Proceso para revisar inventarios",
         codigo: "inventarios",
         icono: "inventory-icon",
         usuarioRegistroId: actorId,
@@ -230,12 +236,14 @@ test("POST /sesiones/iniciarSesion distingue permisos por usuario con el mismo p
     const accesoNovato = loginNovato.body.data?.[0]?.usuario?.accesos?.sistemas?.[0]?.procesos?.[0];
 
     assert.equal(accesoVeterano?.nombre, "Inventarios");
+    assert.equal(accesoVeterano?.descripcion, "Proceso para revisar inventarios");
     assert.equal(accesoVeterano?.tipoPermiso, 1);
     assert.deepEqual(accesoVeterano?.permisos, [
         "sistema.sistemas.inventarios.read",
         "sistema.sistemas.inventarios.write",
     ]);
     assert.equal(accesoNovato?.nombre, "Inventarios");
+    assert.equal(accesoNovato?.descripcion, "Proceso para revisar inventarios");
     assert.equal(accesoNovato?.tipoPermiso, 0);
     assert.deepEqual(accesoNovato?.permisos, ["sistema.sistemas.inventarios.read"]);
 });

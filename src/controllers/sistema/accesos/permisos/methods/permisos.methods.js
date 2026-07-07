@@ -352,6 +352,7 @@ export const construirRespuestaAsignacionPermiso = ({ proceso, modulo, sucursale
     proceso: {
         id: proceso._id.toString(),
         nombre: proceso.nombre,
+        descripcion: proceso.descripcion ?? null,
         codigo: proceso.codigo ?? null,
         url: proceso.url ?? null,
         icono: proceso.icono ?? null,

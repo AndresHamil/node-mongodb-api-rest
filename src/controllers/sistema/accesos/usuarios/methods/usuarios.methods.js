@@ -184,6 +184,7 @@ const resolverAccesosUsuario = async (usuario) => {
             moduloAgrupado.procesos.set(procesoKey, {
                 procesoId: procesoKey,
                 nombre: proceso.nombre,
+                descripcion: proceso.descripcion ?? null,
                 codigo: proceso.codigo,
                 icono: proceso.icono ?? null,
                 url: proceso.url ?? (proceso.ruta?.startsWith("/") ? proceso.ruta.slice(1) : proceso.ruta ?? null),
