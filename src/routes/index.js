@@ -1,13 +1,12 @@
 // ----------------------------------------------------- [ SISTEMA ]
-export { router as accesosRouter } from "./sistema/accesos.routes.js"
-export { router as modulosRouter } from "./sistema/modulos.routes.js"
-export { router as procesosRouter } from "./sistema/procesos.routes.js"
-export { router as organizacionRouter } from "./sistema/organizacion.routes.js"
-// ----------------------------------------------------- [ GESTION ]
-export { router as empresasRouter } from "./gestion/empresas.routes.js"
-export { router as perfilesRouter } from "./gestion/perfiles.routes.js"
-export { router as sucursalesRouter } from "./gestion/sucursales.routes.js"
-export { router as departamentosRouter } from "./gestion/departamentos.routes.js"
-export { router as usuariosRouter } from "./gestion/usuarios.routes.js"
+export { router as accesosSistemaRouter } from "./sistema/accesos/accesos.routes.js";
+export { router as permisosSistemaRouter } from "./sistema/accesos/permisos.routes.js";
+export { router as perfilesSistemaRouter } from "./sistema/accesos/perfiles.routes.js";
+export { router as usuariosSistemaRouter } from "./sistema/accesos/usuarios.routes.js";
+export { router as modulosRouter } from "./sistema/sistemas/modulos.routes.js";
+export { router as procesosRouter } from "./sistema/sistemas/procesos.routes.js";
+export { router as empresasSistemaRouter } from "./sistema/organizacion/empresas.routes.js";
+export { router as sucursalesSistemaRouter } from "./sistema/organizacion/sucursales.routes.js";
+export { router as departamentosSistemaRouter } from "./sistema/organizacion/departamentos.routes.js";
 // ----------------------------------------------------- [ OTROS ]
-export { router as sesionesRouter } from "./otros/sesiones.routes.js";
+export { router as sesionesRouter } from "./otros/sesiones/index.routes.js";

@@ -19,7 +19,7 @@ const validarPermiso = (permiso, index) => {
     if (!/^[a-z]+(\.[a-z]+){2,5}$/.test(permisoNormalizado)) {
         throw utils.crearErrorAplicacion({
             message: `Invalid permission format at permisos[${index}].`,
-            customMessage: `El permiso '${permisoNormalizado}' no tiene un formato válido. Usa claves como gestion.usuarios.registrar.`,
+            customMessage: `El permiso '${permisoNormalizado}' no tiene un formato válido. Usa claves como sistema.accesos.usuarios.registrar.`,
             statusCode: 422,
             code: "INVALID_PERMISSION_FORMAT",
         });

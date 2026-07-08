@@ -12,7 +12,7 @@ app.get('/', (_req, res) => {
 		data: {
 			health: '/health',
 			sesiones: '/sesiones/iniciarSesion',
-			usuarios: '/gestion/usuario/usuarios/consultarUsuarios',
+			usuarios: '/sistema/accesos/usuarios/consultarUsuarios',
 		},
 	});
 });
@@ -27,13 +27,13 @@ app.get('/health', (_req, res) => {
 
 app.use(rutes.modulosRouter);
 app.use(rutes.procesosRouter);
-app.use(rutes.accesosRouter);
-app.use(rutes.organizacionRouter);
-app.use(rutes.empresasRouter);
-app.use(rutes.perfilesRouter);
-app.use(rutes.sucursalesRouter);
-app.use(rutes.departamentosRouter);
-app.use(rutes.usuariosRouter);
+app.use(rutes.accesosSistemaRouter);
+app.use(rutes.permisosSistemaRouter);
+app.use(rutes.perfilesSistemaRouter);
+app.use(rutes.usuariosSistemaRouter);
+app.use(rutes.empresasSistemaRouter);
+app.use(rutes.sucursalesSistemaRouter);
+app.use(rutes.departamentosSistemaRouter);
 app.use(rutes.sesionesRouter);
 
 export { app };
