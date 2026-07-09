@@ -84,6 +84,20 @@ const resolverPermisoAccesoUsuario = ({ acceso, usuarioId, modulo, proceso }) =>
     };
 };
 
+const construirNombreCompletoUsuario = (usuario) => [usuario?.nombre, usuario?.apellido]
+    .map((valor) => `${valor ?? ""}`.trim())
+    .filter(Boolean)
+    .join(" ") || null;
+
+const resolverAsignacionPrincipalUsuario = (usuario) => {
+    const asignaciones = usuario.asignaciones ?? [];
+
+    return asignaciones.find((asignacion) => asignacion.estado !== false && asignacion.principal === true)
+        ?? asignaciones.find((asignacion) => asignacion.estado !== false)
+        ?? asignaciones[0]
+        ?? null;
+};
+
 const resolverDetalleAsignacionUsuario = async (asignacion, { includeContexto = false } = {}) => {
     const respuestaBase = {
         empresaId: asignacion.fkEmpresaId?.toString?.() ?? null,
@@ -113,6 +127,43 @@ const resolverDetalleAsignacionUsuario = async (asignacion, { includeContexto = 
         sucursal: sucursal?.nombre ?? null,
         departamento: departamento?.nombre ?? null,
         perfil: perfil?.nombre ?? null,
+    };
+};
+
+const resolverResumenAsignacionUsuario = async (usuario) => {
+    const asignacionPrincipal = resolverAsignacionPrincipalUsuario(usuario);
+
+    if (!asignacionPrincipal) {
+        return {
+            empresaId: null,
+            empresa: null,
+            sucursalId: null,
+            sucursal: null,
+            departamentoId: null,
+            departamento: null,
+            perfilId: null,
+            perfil: null,
+            usuarioRegistroId: null,
+            usuarioRegistro: null,
+        };
+    }
+
+    const detalleAsignacion = await resolverDetalleAsignacionUsuario(asignacionPrincipal, { includeContexto: true });
+    const usuarioRegistro = detalleAsignacion.usuarioRegistroId
+        ? await buscarUsuarioPorId(detalleAsignacion.usuarioRegistroId)
+        : null;
+
+    return {
+        empresaId: detalleAsignacion.empresaId,
+        empresa: detalleAsignacion.empresa ?? null,
+        sucursalId: detalleAsignacion.sucursalId,
+        sucursal: detalleAsignacion.sucursal ?? null,
+        departamentoId: detalleAsignacion.departamentoId,
+        departamento: detalleAsignacion.departamento ?? null,
+        perfilId: detalleAsignacion.perfilId,
+        perfil: detalleAsignacion.perfil ?? null,
+        usuarioRegistroId: detalleAsignacion.usuarioRegistroId,
+        usuarioRegistro: construirNombreCompletoUsuario(usuarioRegistro),
     };
 };
 
@@ -220,9 +271,13 @@ const resolverAccesosUsuario = async (usuario) => {
 };
 
 export const construirRespuestaUsuario = async (usuario, { includeContextoAsignaciones = false, includeAccesos = false } = {}) => {
-    const asignaciones = await Promise.all((usuario.asignaciones ?? []).map((asignacion) => resolverDetalleAsignacionUsuario(asignacion, {
-        includeContexto: includeContextoAsignaciones,
-    })));
+    const [asignaciones, resumenAsignacion, sesionesActivas] = await Promise.all([
+        Promise.all((usuario.asignaciones ?? []).map((asignacion) => resolverDetalleAsignacionUsuario(asignacion, {
+            includeContexto: includeContextoAsignaciones,
+        }))),
+        resolverResumenAsignacionUsuario(usuario),
+        utils.obtenerSesionesActivasUsuario(usuario._id).then((sesiones) => sesiones.length),
+    ]);
 
     return {
         id: usuario._id.toString(),
@@ -232,6 +287,17 @@ export const construirRespuestaUsuario = async (usuario, { includeContextoAsigna
         usuario: usuario.usuario,
         email: usuario.email,
         telefono: usuario.telefono ?? null,
+        empresaId: resumenAsignacion.empresaId,
+        empresa: resumenAsignacion.empresa,
+        sucursalId: resumenAsignacion.sucursalId,
+        sucursal: resumenAsignacion.sucursal,
+        departamentoId: resumenAsignacion.departamentoId,
+        departamento: resumenAsignacion.departamento,
+        perfilId: resumenAsignacion.perfilId,
+        perfil: resumenAsignacion.perfil,
+        usuarioRegistroId: resumenAsignacion.usuarioRegistroId,
+        usuarioRegistro: resumenAsignacion.usuarioRegistro,
+        sesionesActivas,
         asignaciones,
         ...(includeAccesos ? { accesos: await resolverAccesosUsuario(usuario) } : {}),
         fechaRegistro: utils.formatearFecha(usuario.fechaRegistro),

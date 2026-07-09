@@ -3,9 +3,40 @@ import assert from "node:assert/strict";
 import request from "supertest";
 import { ObjectId } from "mongodb";
 import { app } from "../../../../src/app.js";
-import { createUsuariosTestContext } from "../../../../test-support/sistema/accesos/usuarios.helpers.js";
+import * as methods from "../../../../src/utils/methods.js";
+import { createAutorizacionTestContext } from "../../../../test-support/sistema/autorizacion.helpers.js";
 
-const ctx = createUsuariosTestContext();
+const ctx = createAutorizacionTestContext();
+
+const createRegistroDependencias = async (actorId) => {
+    const empresa = await ctx.createEmpresa({
+        nombre: "Empresa Consulta Usuario",
+        usuarioRegistroId: actorId,
+    });
+    const sucursal = await ctx.createSucursal({
+        empresaId: empresa.insertedId.toString(),
+        nombre: "Sucursal Consulta Usuario",
+        usuarioRegistroId: actorId,
+    });
+    const departamento = await ctx.createDepartamento({
+        empresaId: empresa.insertedId.toString(),
+        sucursalId: sucursal.insertedId.toString(),
+        nombre: "Departamento Consulta Usuario",
+        usuarioRegistroId: actorId,
+    });
+    const perfil = await ctx.createPerfil({
+        nombre: "Perfil Consulta Usuario",
+        permisos: ["sistema.accesos.usuarios.consultar"],
+        usuarioRegistroId: actorId,
+    });
+
+    return {
+        empresaId: empresa.insertedId.toString(),
+        sucursalId: sucursal.insertedId.toString(),
+        departamentoId: departamento.insertedId.toString(),
+        perfilId: perfil.insertedId.toString(),
+    };
+};
 
 // Metodo para preparar la base de datos antes de ejecutar la suite de consultas de usuarios.
 test.before(async () => {
@@ -47,6 +78,44 @@ test("GET /sistema/accesos/usuarios/consultarUsuarios responde 200 con usuarios"
     assert.equal(response.body.data.some((item) => item.id === usuarioA.insertedId.toString()), true);
     assert.equal(response.body.data.some((item) => item.id === usuarioB.insertedId.toString()), true);
     assert.equal(response.body.totalCount >= 2, true);
+});
+
+test("GET /sistema/accesos/usuarios/consultarUsuarios incluye contexto principal, usuario registrador y sesiones activas", async () => {
+    const { token, actorId } = await ctx.createActorSession();
+    const dependencias = await createRegistroDependencias(actorId);
+    const usuario = await ctx.createAssignedUser({
+        nombre: "Usuario",
+        apellido: "Contexto",
+        ...dependencias,
+        usuarioRegistroId: actorId,
+    });
+    const sesionesCollection = await methods.getSesionesCollection();
+    const sesionExtra = methods.crearDocumentoSesion({
+        usuarioId: usuario.insertedId,
+        metadata: {
+            dispositivo: "Chrome",
+            userAgent: "node-test",
+            ip: "127.0.0.2",
+        },
+    });
+    const sesionExtraResult = await sesionesCollection.insertOne(sesionExtra);
+    ctx.trackSessionId(sesionExtraResult.insertedId);
+
+    const response = await request(app)
+        .get("/sistema/accesos/usuarios/consultarUsuarios")
+        .set("Authorization", `Bearer ${token}`);
+
+    assert.equal(response.status, 200);
+
+    const usuarioResponse = response.body.data.find((item) => item.id === usuario.insertedId.toString());
+
+    assert.ok(usuarioResponse);
+    assert.equal(usuarioResponse.perfil, "Perfil Consulta Usuario");
+    assert.equal(usuarioResponse.departamento, "Departamento Consulta Usuario");
+    assert.equal(usuarioResponse.sucursal, "Sucursal Consulta Usuario");
+    assert.equal(usuarioResponse.empresa, "Empresa Consulta Usuario");
+    assert.equal(usuarioResponse.usuarioRegistro, "Actor Test");
+    assert.equal(usuarioResponse.sesionesActivas, 1);
 });
 
 // Metodo para probar la consulta de un usuario existente por su identificador.
