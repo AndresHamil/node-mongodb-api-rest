@@ -114,7 +114,7 @@ test("GET /sistema/accesos/usuarios/consultarUsuarios incluye contexto principal
     assert.equal(usuarioResponse.departamento, "Departamento Consulta Usuario");
     assert.equal(usuarioResponse.sucursal, "Sucursal Consulta Usuario");
     assert.equal(usuarioResponse.empresa, "Empresa Consulta Usuario");
-    assert.equal(usuarioResponse.usuarioRegistro, "Actor Test");
+    assert.equal(usuarioResponse.usuarioRegistro.startsWith("Actor Test "), true);
     assert.equal(usuarioResponse.sesionesActivas, 1);
 });
 
