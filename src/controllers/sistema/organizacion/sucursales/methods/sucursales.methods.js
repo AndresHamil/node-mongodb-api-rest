@@ -1,4 +1,3 @@
-import { DB_COLLECTION_SUCURSALES } from "../../../../../config.js";
 import { getCollection } from "../../../../../db.js";
 import * as utils from "../../../../../utils/methods.js";
 import {
@@ -8,7 +7,7 @@ import {
 } from "../../../methods/organizacion.methods.js";
 import * as empresasMethods from "../../empresas/methods/empresas.methods.js";
 
-export const getSucursalesCollection = async () => getCollection(DB_COLLECTION_SUCURSALES);
+export const getSucursalesCollection = async () => getCollection("sucursales");
 
 export const buscarSucursalPorId = async (sucursalId) => {
     const objectId = utils.validarObjectId(sucursalId, "La", "sucursalId", true);

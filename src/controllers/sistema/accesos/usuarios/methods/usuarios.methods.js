@@ -1,4 +1,3 @@
-import { DB_COLLECTION_USUARIOS } from "../../../../../config.js";
 import { getCollection } from "../../../../../db.js";
 import * as utils from "../../../../../utils/methods.js";
 import * as empresasMethods from "../../../organizacion/empresas/methods/empresas.methods.js";
@@ -12,7 +11,7 @@ import * as procesosMethods from "../../../sistemas/procesos/methods/procesos.me
 export const MAX_USUARIOS_RESULTS = 20;
 
 // Metodo para obtener la coleccion de usuarios desde MongoDB.
-export const getUsuariosCollection = async () => getCollection(DB_COLLECTION_USUARIOS);
+export const getUsuariosCollection = async () => getCollection("usuarios");
 
 // Metodo para buscar un usuario por su identificador y validar el ObjectId recibido.
 export const buscarUsuarioPorId = async (usuarioId) => {

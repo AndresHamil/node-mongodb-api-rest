@@ -48,8 +48,8 @@ cp .env.example .env
 En .env agrega tu URI real y revisa el nombre de la base:
 
 ```env
-MONGO_URI=mongodb+srv://TU_USUARIO:TU_PASSWORD@TU_CLUSTER.mongodb.net/valianDB?retryWrites=true&w=majority&appName=ValianDB
-DB_DATABASE=valianDB
+MONGODB_URI=mongodb+srv://TU_USUARIO:TU_PASSWORD@TU_CLUSTER.mongodb.net/valianDB?retryWrites=true&w=majority&appName=ValianDB
+MONGODB_DATABASE_NAME=valianDB
 ```
 
 ### 4. Inicializar la base minima
@@ -121,27 +121,17 @@ El repositorio no sube .env real. Solo sube .env.example con la estructura base.
 Variables principales del proyecto:
 
 ```env
-MONGO_URI=mongodb+srv://TU_USUARIO:TU_PASSWORD@TU_CLUSTER.mongodb.net/valianDB?retryWrites=true&w=majority&appName=ValianDB
-DB_DATABASE=valianDB
+MONGODB_URI=mongodb+srv://TU_USUARIO:TU_PASSWORD@TU_CLUSTER.mongodb.net/valianDB?retryWrites=true&w=majority&appName=ValianDB
+MONGODB_DATABASE_NAME=valianDB
 
-SESSION_DURATION_HOURS=12
-SESSION_INACTIVITY_MINUTES=60
-SESSION_RENEWAL_THRESHOLD_MINUTES=2
-SESSION_MAX_ACTIVE=5
-
-DB_COLLECTION_USUARIOS=usuarios
-DB_COLLECTION_SESIONES=sesiones
-DB_COLLECTION_SUCURSALES=sucursales
-DB_COLLECTION_DEPARTAMENTOS=departamentos
-DB_COLLECTION_PERFILES=perfiles
 ```
 
 Notas importantes:
 
-- Para Vercel usa una sola variable de conexion: MONGO_URI.
+- Para Vercel usa una sola variable de conexion: MONGODB_URI.
 - PORT es opcional en local y no se configura en Vercel.
 - No subas .env a Git.
-- No dupliques MONGO_URI y MONGODB_URI salvo que tengas una razon concreta.
+- Usa solo MONGODB_URI como variable de conexion.
 
 ## Scripts basicos
 
@@ -220,17 +210,8 @@ El proyecto ya incluye compatibilidad basica para Vercel mediante una entrada se
 
 ### Variables que debes capturar en Vercel
 
-- MONGO_URI
-- DB_DATABASE
-- SESSION_DURATION_HOURS
-- SESSION_INACTIVITY_MINUTES
-- SESSION_RENEWAL_THRESHOLD_MINUTES
-- SESSION_MAX_ACTIVE
-- DB_COLLECTION_USUARIOS
-- DB_COLLECTION_SESIONES
-- DB_COLLECTION_SUCURSALES
-- DB_COLLECTION_DEPARTAMENTOS
-- DB_COLLECTION_PERFILES
+- MONGODB_URI
+- MONGODB_DATABASE_NAME
 
 ### Variables que no necesitas capturar en Vercel
 
@@ -238,7 +219,6 @@ El proyecto ya incluye compatibilidad basica para Vercel mediante una entrada se
 - DB_USER
 - DB_PASSWORD
 - AUTHORIZED_IP
-- MONGODB_URI si ya estas usando MONGO_URI
 
 ### Flujo de despliegue
 
@@ -448,3 +428,4 @@ Este repositorio todavia conserva rastros del proyecto original, pero la parte v
 - Mantén fuera de Git cualquier credencial real.
 - Si expones una URI o contraseña, rotala inmediatamente en Atlas.
 - Antes de culpar al codigo en Vercel, revisa primero variables de entorno y Network Access en Atlas.
+
