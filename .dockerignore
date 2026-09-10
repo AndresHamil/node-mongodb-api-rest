@@ -1,5 +1,48 @@
-node_modules
+# Dependencias
+node_modules/
 npm-debug.log
+yarn-error.log
+
+# Git
 .git
-.vscode
+.gitignore
+.gitattributes
+
+# Entorno
 .env
+.env.*
+.env.local
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Testing
+test
+test-support
+*.test.js
+
+# Scripts de desarrollo
+scripts/sync-branch-env.js
+scripts/createUsuariosIndexes.js
+
+# Documentación
+README.md
+*.md
+
+# MongoDB scripts (usados solo en desarrollo/setup)
+db/
+
+# Vercel
+vercel.json
+
+# CI/CD
+.github
+
+# Node
+.npmrc
+.nvmrc
