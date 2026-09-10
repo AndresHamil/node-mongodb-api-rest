@@ -9,26 +9,28 @@ const branchName = process.argv[2] || execSync("git rev-parse --abbrev-ref HEAD"
     encoding: "utf8",
 }).trim();
 
-const envTemplatesByBranch = {
-    dev: ".env.dev.local",
-    main: ".env.main.local",
+const envConfigByBranch = {
+    dev: {
+        MONGODB_URI: "mongodb://localhost:27017",
+        MONGODB_DATABASE_NAME: "valian"
+    },
+    main: {
+        MONGODB_URI: "mongodb+srv://luisandresrodriguezcampos0709_db_user:tFdLicJndnPPGeSV@valiandb.vhymgiy.mongodb.net/?appName=ValianDB",
+        MONGODB_DATABASE_NAME: "valian"
+    }
 };
 
-const templateFileName = envTemplatesByBranch[branchName] ?? null;
+const envConfig = envConfigByBranch[branchName];
 
-if (!templateFileName) {
+if (!envConfig) {
     console.log(`\x1b[90m↷  Env switch skipped:\x1b[0m no automatic profile for branch '${branchName}'.`);
     process.exit(0);
 }
 
-const templatePath = path.join(repoRoot, templateFileName);
+const envContent = Object.entries(envConfig)
+    .map(([key, value]) => `${key}=${value}`)
+    .join("\n");
 
-if (!fs.existsSync(templatePath)) {
-    console.log(`\x1b[93m⚠  Env switch skipped:\x1b[0m ${templateFileName} was not found.`);
-    process.exit(0);
-}
+fs.writeFileSync(envPath, envContent);
 
-const templateContent = fs.readFileSync(templatePath, "utf8");
-fs.writeFileSync(envPath, templateContent);
-
-console.log(`\x1b[94m➜  Env profile:\x1b[0m ${branchName} -> ${templateFileName}`);
+console.log(`\x1b[94m➜  Env profile:\x1b[0m ${branchName} (local MongoDB → MongoDB Atlas)`);
