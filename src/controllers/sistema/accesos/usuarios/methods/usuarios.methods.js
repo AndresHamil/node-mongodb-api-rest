@@ -25,6 +25,8 @@ export const buscarUsuarioPorCredencial = async (usuario) => {
     const usuariosCollection = await getUsuariosCollection();
     const credencial = utils.normalizarUsuarioSesion(usuario);
 
+
+
     return usuariosCollection.findOne({
         $or: [
             { email: credencial },

@@ -41,6 +41,12 @@ export const connectMongo = async () => {
         throw new Error("MONGODB_URI is not configured.");
     }
 
+    console.log("[MongoDB] Conectando a:", {
+        uri: normalizedMongoUri,
+        database: normalizedDatabaseName,
+        isLocal: IS_LOCAL_MONGODB,
+    });
+
     if (!client) {
         client = createMongoClient();
     }
@@ -57,11 +63,14 @@ export const connectMongo = async () => {
     await clientPromise;
     dbInstance = client.db(normalizedDatabaseName);
 
+    console.log("[MongoDB] Conectado exitosamente a base de datos:", normalizedDatabaseName);
+
     return dbInstance;
 };
 
 export const getCollection = async (collectionName) => {
     const db = await connectMongo();
+    
     return db.collection(collectionName);
 };
 

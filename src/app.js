@@ -1,4 +1,5 @@
 import express from "express";
+import { getCollection } from "./db.js";
 import * as rutes from "./routes/index.js";
 
 const app = express();
@@ -13,6 +14,7 @@ app.get('/', (_req, res) => {
 			health: '/health',
 			sesiones: '/sesiones/iniciarSesion',
 			usuarios: '/sistema/accesos/usuarios/consultarUsuarios',
+			debug_usuarios: '/debug/usuarios',
 		},
 	});
 });
@@ -23,6 +25,24 @@ app.get('/health', (_req, res) => {
 		message: 'OK',
 		data: null,
 	});
+});
+
+// Debug: SELECT * de usuarios sin autenticación
+app.get('/debug/usuarios', async (_req, res) => {
+	try {
+		const usuariosCollection = await getCollection("usuarios");
+		const usuarios = await usuariosCollection.find({}).toArray();
+		res.json({
+			success: true,
+			total: usuarios.length,
+			data: usuarios,
+		});
+	} catch (error) {
+		res.status(500).json({
+			success: false,
+			error: error.message,
+		});
+	}
 });
 
 app.use(rutes.modulosRouter);
