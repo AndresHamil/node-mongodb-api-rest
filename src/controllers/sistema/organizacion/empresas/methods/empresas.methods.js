@@ -1,4 +1,3 @@
-import { DB_COLLECTION_EMPRESAS } from "../../../../../config.js";
 import { getCollection } from "../../../../../db.js";
 import * as utils from "../../../../../utils/methods.js";
 import {
@@ -7,7 +6,7 @@ import {
     prepararPayloadBaseOrganizacional,
 } from "../../../methods/organizacion.methods.js";
 
-export const getEmpresasCollection = async () => getCollection(DB_COLLECTION_EMPRESAS);
+export const getEmpresasCollection = async () => getCollection("empresas");
 
 export const buscarEmpresaPorId = async (empresaId) => {
     const objectId = utils.validarObjectId(empresaId, "La", "empresaId", true);

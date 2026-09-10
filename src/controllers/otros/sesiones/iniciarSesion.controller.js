@@ -10,6 +10,7 @@ export const iniciarSesion = async (req, res) => {
         tipoSistemaOperativo = null,
     } = req.body ?? {};
 
+
     let successRes = true,
         messageRes = "Inicio de sesion exitoso",
         errorRes = null,
@@ -32,6 +33,7 @@ export const iniciarSesion = async (req, res) => {
         dispositivo = metadataSesion.dispositivo;
 
         const usuarioDb = await usuariosMethods.buscarUsuarioPorCredencial(usuario);
+
 
         if (!usuarioDb) {
             const error = new Error("Invalid credentials.");

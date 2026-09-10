@@ -1,4 +1,3 @@
-import { DB_COLLECTION_MODULOS } from "../../../../../config.js";
 import { getCollection } from "../../../../../db.js";
 import * as utils from "../../../../../utils/methods.js";
 import * as sistemaMethods from "../../../methods/sistema.methods.js";
@@ -53,7 +52,7 @@ export const normalizarTipoModulo = (tipo = null) => {
     return tipoResuelto;
 };
 
-export const getModulosCollection = async () => getCollection(DB_COLLECTION_MODULOS);
+export const getModulosCollection = async () => getCollection("modulos");
 
 export const buscarModuloPorId = async (moduloId) => {
     const objectId = utils.validarObjectId(moduloId, "El", "moduloId", true);

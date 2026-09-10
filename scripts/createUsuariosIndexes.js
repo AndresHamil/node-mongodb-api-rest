@@ -1,9 +1,8 @@
 import { connectMongo } from "../src/db.js";
-import { DB_COLLECTION_USUARIOS } from "../src/config.js";
 
 const run = async () => {
     const db = await connectMongo();
-    const usuariosCollection = db.collection(DB_COLLECTION_USUARIOS);
+    const usuariosCollection = db.collection("usuarios");
 
     const indexes = await usuariosCollection.createIndexes([
         {

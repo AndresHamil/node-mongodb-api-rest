@@ -1,4 +1,3 @@
-import { DB_COLLECTION_DEPARTAMENTOS } from "../../../../../config.js";
 import { getCollection } from "../../../../../db.js";
 import * as utils from "../../../../../utils/methods.js";
 import {
@@ -9,7 +8,7 @@ import {
 import * as empresasMethods from "../../empresas/methods/empresas.methods.js";
 import * as sucursalesMethods from "../../sucursales/methods/sucursales.methods.js";
 
-export const getDepartamentosCollection = async () => getCollection(DB_COLLECTION_DEPARTAMENTOS);
+export const getDepartamentosCollection = async () => getCollection("departamentos");
 
 export const buscarDepartamentoPorId = async (departamentoId) => {
     const objectId = utils.validarObjectId(departamentoId, "El", "departamentoId", true);

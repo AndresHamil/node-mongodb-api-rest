@@ -1,13 +1,11 @@
-import {
-    DB_COLLECTION_SESIONES,
-    SESSION_INACTIVITY_MINUTES,
-    SESSION_MAX_ACTIVE,
-    SESSION_RENEWAL_THRESHOLD_MINUTES,
-} from "../config.js";
 import { getCollection } from "../db.js";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import { ObjectId } from "mongodb";
+
+const SESSION_INACTIVITY_MINUTES = 60;
+const SESSION_RENEWAL_THRESHOLD_MINUTES = 2;
+const SESSION_MAX_ACTIVE = 5;
 
 function crearErrorValidacion(message, customMessage, { statusCode = 422, code = "VALIDATION_ERROR", details = null } = {}) {
     const error = new Error(message);
@@ -287,7 +285,7 @@ export const generarUsuario = (nombre, apellido) => {
     return `${nombreLimpio}.${apellidoLimpio}.${fechaFormato}${sufijoAleatorio}`;
 };
 
-export const getSesionesCollection = async () => getCollection(DB_COLLECTION_SESIONES);
+export const getSesionesCollection = async () => getCollection("sesiones");
 
 export const construirRespuestaSesion = async (sesion, { includeToken = false } = {}) => {
     return {

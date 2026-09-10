@@ -1,10 +1,9 @@
-import { DB_COLLECTION_PROCESOS } from "../../../../../config.js";
 import { getCollection } from "../../../../../db.js";
 import * as utils from "../../../../../utils/methods.js";
 import * as sistemaMethods from "../../../methods/sistema.methods.js";
 import * as modulosMethods from "../../modulos/methods/modulos.methods.js";
 
-export const getProcesosCollection = async () => getCollection(DB_COLLECTION_PROCESOS);
+export const getProcesosCollection = async () => getCollection("procesos");
 
 export const buscarProcesoPorId = async (procesoId) => {
     const objectId = utils.validarObjectId(procesoId, "El", "procesoId", true);

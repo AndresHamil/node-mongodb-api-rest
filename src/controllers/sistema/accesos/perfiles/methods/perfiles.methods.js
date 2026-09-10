@@ -1,8 +1,7 @@
-import { DB_COLLECTION_PERFILES } from "../../../../../config.js";
 import { getCollection } from "../../../../../db.js";
 import * as utils from "../../../../../utils/methods.js";
 
-export const getPerfilesCollection = async () => getCollection(DB_COLLECTION_PERFILES);
+export const getPerfilesCollection = async () => getCollection("perfiles");
 
 export const buscarPerfilPorId = async (perfilId) => {
     const objectId = utils.validarObjectId(perfilId, "El", "perfilId", true);
